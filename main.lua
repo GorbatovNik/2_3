@@ -111,7 +111,7 @@ local F = {FKW = 6, FNTmh = 5, FNTm = 4, FTm = 3, FWS = 2, FComm = 1} -- priorit
 
 local file = io.open("input.txt", "r")
 local code = file:read("a")
--- print("PROGRAM:\n" .. code)
+print("PROGRAM:\n" .. code)
 
 
 local fa = FiniteAutomaton(V, Q, q0, F, d)
@@ -154,14 +154,14 @@ end
 require('Lexer')
 local lexer = Lexer(fa, symbol2factor, code, priority2tokenType)
 
--- print("TOKENS:")
+print("TOKENS:")
 local tokens = {}
 local token = lexer:nextToken()
 while token do
 	local toprint = token.domain .. " "
 	toprint = toprint .. "(".. tostring(token.startLine) .. ", " .. tostring(token.startPos) .. ")-(" .. tostring(token.finishLine) .. ", " .. tostring(token.finishPos) .. ")"
 	if token.value then toprint = toprint .. ": ".. token.value end
-	-- print(toprint)
+	print(toprint)
 	table.insert(tokens, token)
 	token = lexer:nextToken()
 end
@@ -245,5 +245,22 @@ local function buildParseSubtree()
 end
 parseTree = buildParseSubtree()
 
-print(tetms)
+function printTable(tbl, indent)
+    if not indent then
+        indent = 0
+    end
+
+    local padding = string.rep("  ", indent) -- Двойные пробелы для каждого уровня вложенности
+
+    for key, value in pairs(tbl) do
+        if type(value) == "table" then
+            print(padding .. key .. ":")
+            printTable(value, indent + 1) -- Рекурсивный вызов для вложенных таблиц
+        else
+            print(padding .. key .. ": " .. tostring(value))
+        end
+    end
+end
+
+printTable(parseTree)
 
